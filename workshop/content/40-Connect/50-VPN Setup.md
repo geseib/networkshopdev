@@ -18,7 +18,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1. You will see the VPC Attachments listed, but we want to add one to connect our Datacenter. Click the **Create Transit Gateway Attachment** button above the list.
 
-1. Fill out the **Create Transit Gateway Attachment** form.
+1. Fill out the **Create Transit Gateway Attachment** form. exactly as below (*note: these choices will match our config of the router on the other side of the VPN tunnels*)
 
 - **Transit Gateway ID** will have a name Tag matching your first CloudFormation Stack name.
 - **Attachment Type** is **VPN**
@@ -35,6 +35,8 @@ In a real production environment we would setup a second router for redundancy a
 1.  While we are on the **Transit Gateway Attachments** page, lets go back to the top and give the VPN connection a name. Scan down the **Resource type** column for the VPN Attachment. \*note: you may have to hit the refresh icon in the upper right above the table to get the new VPN to show. If you click the pencil that appears when you mouse over the **Name** column, you can enter a name. Be sure to click the _check_ mark to save the name.
 
 1.  From the Menu on the Left Select **Site-to-Site VPN Connections**. From the main panel, you likely will see the VPN is in State **pending**. That fine. Lets take a look toward the bottom, and click the **Tunnel Details** tab. Record the two **Outside IP Address**es. We want to record them in the order of the one pairing up with the **Inside IP CIDR** range 169.254.**10**.0/30 first. _note: You can use cloud9 as a scratch pad, by clicking the + in the main panel and selecting **New file**. be sure to paste them in the right order!_
+
+1. From the menu on the left, Scroll down and select **Transit Gateway Attachments**. We need to verify that the attachment we created above is no longer in status **pending**. Instead it should be is state **available** like all of the VPC attachments in the list.
 
     ![Create VPN Attachment](../images/tgw-createvpnattach.png)
 
