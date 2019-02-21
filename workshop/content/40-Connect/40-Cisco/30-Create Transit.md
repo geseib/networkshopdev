@@ -19,7 +19,7 @@ Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route 
    [![EU West (Singapore)](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/ap-southeast-1.svg)](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks/create/review?stackName=tgw1-csr&templateURL=https://s3.amazonaws.com/net-workshop-us-east-2/2.tgw-csr.yaml&param_ParentStack=tgw1)
 
 1. For the **Specify stack details** give the stack a name (compounded names work well. i.e. if the VPC stack created in the setup module was named **TGW1** name this stack **TGW1-CSR**), pick the keypair you created earlier, and enter the name of your first stack (must be entered exactly to work). Click **Next**.
-   ![Stack Parameters](../images/createStack-CSRparameters.png)
+   ![Stack Parameters](/images/createStack-CSRparameters.png)
 
 1. For **Configuration stack options** we dont need to change anything, so just click **Next** in the bottom right.
 
