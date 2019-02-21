@@ -18,7 +18,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1. You will see the VPC Attachments listed, but we want to add one to connect our Datacenter. Click the **Create Transit Gateway Attachment** button above the list.
 
-1. Fill out the **Create Transit Gateway Attachment** form. exactly as below (*note: these choices will match our config of the router on the other side of the VPN tunnels*)
+1. Fill out the **Create Transit Gateway Attachment** form. exactly as below (_note: these choices will match our config of the router on the other side of the VPN tunnels_)
 
 - **Transit Gateway ID** will have a name Tag matching your first CloudFormation Stack name.
 - **Attachment Type** is **VPN**
@@ -30,18 +30,18 @@ In a real production environment we would setup a second router for redundancy a
 - For **Inside IP CIDR for Tunnel 2** use **169.254.10.0/30**for CIDR.
 - For **Pre-Shared Key for Tunnel 2** use **awsamazon**
 - Once the page is filled out, click **Create attachment** at the bottom right.
-  ![Create VPN Attachment](../images/tgw-createvpnattach.png)
+  ![Create VPN Attachment](/images/tgw-createvpnattach.png)
 
 1.  While we are on the **Transit Gateway Attachments** page, lets go back to the top and give the VPN connection a name. Scan down the **Resource type** column for the VPN Attachment. \*note: you may have to hit the refresh icon in the upper right above the table to get the new VPN to show. If you click the pencil that appears when you mouse over the **Name** column, you can enter a name. Be sure to click the _check_ mark to save the name.
 
 1.  From the Menu on the Left Select **Site-to-Site VPN Connections**. From the main panel, you likely will see the VPN is in State **pending**. That fine. Lets take a look toward the bottom, and click the **Tunnel Details** tab. Record the two **Outside IP Address**es. We want to record them in the order of the one pairing up with the **Inside IP CIDR** range 169.254.**10**.0/30 first. _note: You can use cloud9 as a scratch pad, by clicking the + in the main panel and selecting **New file**. be sure to paste them in the right order!_
 
-1. From the menu on the left, Scroll down and select **Transit Gateway Attachments**. We need to verify that the attachment we created above is no longer in status **pending**. Instead it should be is state **available** like all of the VPC attachments in the list.
+1.  From the menu on the left, Scroll down and select **Transit Gateway Attachments**. We need to verify that the attachment we created above is no longer in status **pending**. Instead it should be is state **available** like all of the VPC attachments in the list.
 
-    ![Create VPN Attachment](../images/tgw-createvpnattach.png)
+    ![Create VPN Attachment](/images/tgw-createvpnattach.png)
 
 1.  From the Menu on the Left Select **Transit Gateway Route Tables**. From the table in the main panel select **Green Route Table**. Lets take a look toward the bottom, and click the **Associations** tab. Associations mean that traffic coming from the outside toward the Transit gateway will use this route table to know where the packet will go after routing through the TGW. _note: An attachment can only be Associated with one route table. But a route table can have multiple associations_. Here in the **Green Route Table**, We already have one association, The **Datacenter Services VPC**. Click **Create associations** in the **Associations** tab. From the drop-down list, select the vpn. _note:it should be the only one in the list without a **Association route table** ._ Click **Create association**.
-    ![Associate VPN](../images/tgw-vpnassocationspending.png)
+    ![Associate VPN](/images/tgw-vpnassocationspending.png)
 
 1.  While at the **Transit Gateway Route Tables**, take a look at the **Propagations** tab. These are the Resources that Dynamically inform the route table. An attachment can propagate to multiple route tables. For the Datacenter, we want to propagate to all of the route tables so the VPC associated with each route table can route back to the datacenter. Lets start with the **Green Route Table**. We can see all of the VPCs are propagating their CIDR to the route table. Since the **Datacenter Services VPC** is also associated with this route table, we need to propagate the VPN routes to the **Green Route Table**.
 
@@ -51,7 +51,7 @@ In a real production environment we would setup a second router for redundancy a
 
 1.  Back on the Cloud9 browser tab, using the two VPN tunnel endpoint address generated from the step above, cd to tgwwalk on the Cloud9 bash console and run the bash script, ./createcsr.sh. _note: Be sure to put the address that lines up with Inside IP CIDR address 169.254.10.0/30 for ip1_.
     Example from Site-to-Site VPN
-    ![VPN tunnel Addresses](../images/vpn-tunneladdresses.png)
+    ![VPN tunnel Addresses](/images/vpn-tunneladdresses.png)
 
     ```
     cd tgwwalk
@@ -78,7 +78,7 @@ In a real production environment we would setup a second router for redundancy a
 1.  Once, the paste is finished, if you are still at the (config)# or (config-router) prompt, type **end** and press enter.
 
 1.  Now lets look at the new interfaces: **sh ip int br**. You should see new interfaces: Tunnel1 and Tunnel2 and they both should show up. \*note: if they do not change from down to up after a minute, likely cause is the ip addresses were flipped in the createcsr script.
-    ![ssh key and ssh to CSR](../images/csr-showtunnel.png)
+    ![ssh key and ssh to CSR](/images/csr-showtunnel.png)
 
 1.  Lets make sure we are seeing the routes on the Cisco CSR. first we can look at what BGP is seeing: **show ip bgp summary**. The most important thing to see is the State/PfxRcd (Prefixes received). If this is in Active or Idle (likely if neighbor statement is wrong: IP address, AS number) there is a configuration issue. What we want to see is a number. In fact if everything is setup correctly we should see 4 for each neighbor.
 

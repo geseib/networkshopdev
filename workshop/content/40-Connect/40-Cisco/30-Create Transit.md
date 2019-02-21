@@ -4,7 +4,7 @@ chapter: true
 weight: 30
 ---
 
-Deploy Transit Gateway and Datacenter Router
+## Deploy Transit Gateway and Datacenter Router
 
 We now are ready to start our connectivity and routing policy.
 Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route Tables, and the Datacenter Router (Cisco CSR).
@@ -24,7 +24,7 @@ Run CloudFormation template 2.tgw-csr.yaml to deploy the Transit Gateway, route 
 1. For **Configuration stack options** we dont need to change anything, so just click **Next** in the bottom right.
 
 1. Scroll down to the bottom of the **Review name_of_your_stack** and check the **I acknowledge the AWS CloudFormation might create IAM resources with custom names.** Click the **Create** button in the lower right.
-   ![Create Stack](../images/createStack-VPCiam.png)
+   ![Create Stack](/images/createStack-VPCiam.png)
 
 1. wait for the Stack to show **Create_Complete**.
-   ![Stack Complete](../images/createStack-CSRcomplete.png)
+   ![Stack Complete](/images/createStack-CSRcomplete.png)

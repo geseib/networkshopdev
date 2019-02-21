@@ -4,7 +4,7 @@ chapter: true
 weight: 80
 ---
 
-# Routing Boundaries
+## Routing Boundaries
 
 If you tested between the P1 server and a NP1 or NP2 server, you should have also seen a reply ping. But that's **not** what we wanted. Look at the VPC route table and the Associated Transit Gateway Route table (_for P1 this should be Blue, for NP1 or NP2 this should be Red_) Follow the logic to understand what's going on. See if see whats causing the issue, before looking below to solve it.
 
@@ -24,7 +24,7 @@ If you tested between the P1 server and a NP1 or NP2 server, you should have als
 
 1. At the Create route screen, for the **CIDR** enter **10.16.0.0/13** and check the box next to **Blackhole**. This will drop any traffic destined for the Non-Production VPCs. This is because TGW looks for the most specific route that matches and the /13 is more specific than the /0 route.
 
-   ![Blackhole route](../images/tgw-blackholeroute.png)
+   ![Blackhole route](/images/tgw-blackholeroute.png)
 
 1. Go back to Session Manager and connect to the P1 server and re-attempt to ping the NP1 or NP2 servers. Pings should fail now.
 

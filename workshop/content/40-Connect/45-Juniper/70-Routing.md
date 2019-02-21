@@ -4,9 +4,9 @@ chapter: true
 weight: 70
 ---
 
-# Routing in the VPCs
+## Routing in the VPCs
 
-![Specify Details Screenshot](../images/hybrid-routes-diagram.png)
+![Specify Details Screenshot](/images/hybrid-routes-diagram.png)
 
 ## Create Routes in the VPC to the Transit Gateway Attachments
 
@@ -21,7 +21,7 @@ While the CloudFormation Template created attachments to the VPCs and route tabl
 1. You will see the Route Tables listed in the main pane. Lets Start with NP1-_stack_name_-Private route table, Check the box next to it. Let take a look toward the bottom of the panel and click the **Routes** tab. Currently, there is just one route, the local VPC route. Since the only way out is going to be the Transit Gateway, lets make our life simple and point a default route to the Transit Gateway Attachment. Click the **Edit Routes** in the **Routes** tab.
 
 1. On the **Edit routes** page, Click the **Add route** button and enter a default route by setting the destination of **0.0.0.0/0**. In the Target drop-down, select **Transit Gateway** and pick your Transit Gateway create for this project. It should be the only one.
-   ![Stack Complete](../images/vpc-defaultroute.png)
+   ![Stack Complete](/images/vpc-defaultroute.png)
 
 1. Repeat the above step for the following route tables:
 
