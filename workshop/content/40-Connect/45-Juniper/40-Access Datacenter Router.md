@@ -30,12 +30,12 @@ In order to access and work on the Datacenter router, we will use AWS Cloud9. Cl
 
 1.From another browser tab, again navigate to the Management Console and choose **Services** then select **CloudFormation**.
 
-1. From the left-hand menu, select **Exports** in the left hand menu and find the export for ssh to the CSR: DC1-_stack-name_-CSR-VPC and copy the **Export value**
-   ![ssh key and ssh to CSR](/images/cloudformation-csrssh.png)
+1. From the left-hand menu, select **Exports** in the left hand menu and find the export for ssh to the CSR: DC1-_stack-name_-SRXssh and copy the **Export value**
+   ![ssh key and ssh to SRX](/images/cloudformation-csrssh.png)
 
-1. Back on the **Cloud9** Browser tab paste this into the bash shell. _note: in the command you will notice the -i reference to the pem file you just copied, this is the private half of the key pair. The public key is on the Cisco CSR_. Answer **yes** to **Are you sure you want to continue connecting (yes/no)?**
+1. Back on the **Cloud9** Browser tab paste this into the bash shell. _note: in the command you will notice the -i reference to the pem file you just copied, this is the private half of the key pair. The public key is on the Juniper SRX_. Answer **yes** to **Are you sure you want to continue connecting (yes/no)?**
 
-1. You now are connected to the Cisco CSR in the Datacenter VPC. We will be configuring the Cisco CSR.
+1. You now are connected to the Juniper SRX in the Datacenter VPC. We will be configuring the Juniper SRX.
 
 1. Lets look at the Interfaces by typing a the #prompt: **show ip interface brief** or **sh ip int br** for short. You will see the GigabitEhternet1 which is the interface our ipsec tunnel were traverse.
 
