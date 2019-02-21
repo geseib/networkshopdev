@@ -1,7 +1,7 @@
 +++
 title = "Cisco Router in Datacenter"
-chapter = true
-weight = 40
+chapter = false
+weight = 41
 +++
 
 # Transit Gateway Setup and VPN to Datacenter
