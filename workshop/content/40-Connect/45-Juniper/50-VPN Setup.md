@@ -129,6 +129,9 @@ aws.inet.0: 14 destinations, 18 routes (14 active, 0 holddown, 0 hidden)
   [BGP/170] 00:53:35, MED 100, localpref 100
   AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
   <output omitted>
+
+  ```
+
   ```
 
 1.  Notice that there is only one next-hop address for each of the VPCs CIDRs. We can fix this by allow Equal Cost Multipathing (ECMP).
@@ -140,43 +143,48 @@ aws.inet.0: 14 destinations, 18 routes (14 active, 0 holddown, 0 hidden)
 
     Now, run **sh route table aws** command again. See, both the tunnels are showing up!
 
-          ```
-          + = Active Route, - = Last Active, * = Both
+    ```
+    + = Active Route, - = Last Active, * = Both
 
-0.0.0.0/0 _[Static/5] 01:25:10 > to 10.4.0.1 via ge-0/0/1.0
-10.0.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-to 169.254.11.1 via st0.2
-[BGP/170] 01:12:58, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-10.4.0.0/16 _[Static/5] 01:25:11 > to 10.4.8.1 via ge-0/0/0.0
-10.4.0.0/22 _[Direct/0] 01:25:10 > via ge-0/0/1.0
-10.4.0.12/32 _[Local/0] 01:25:10
-Local via ge-0/0/1.0
-10.4.8.0/21 _[Direct/0] 01:25:11 > via ge-0/0/0.0
-10.4.8.11/32 _[Local/0] 01:25:11
-Local via ge-0/0/0.0
-10.8.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-to 169.254.11.1 via st0.2
-[BGP/170] 01:12:58, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-10.16.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-to 169.254.11.1 via st0.2
-[BGP/170] 01:12:58, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-10.17.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
-to 169.254.11.1 via st0.2
-[BGP/170] 01:12:58, MED 100, localpref 100
-AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
-169.254.10.0/30 _[Direct/0] 01:25:10 > via st0.1
-169.254.10.2/32 _[Local/0] 01:25:10
-Local via st0.1
-169.254.11.0/30 _[Direct/0] 01:25:10 > via st0.2
-169.254.11.2/32 _[Local/0] 01:25:10
-Local via st0.2
+    0.0.0.0/0 _[Static/5] 01:25:10 > to 10.4.0.1 via ge-0/0/1.0
+    10.0.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    10.4.0.0/16 _[Static/5] 01:25:11 > to 10.4.8.1 via ge-0/0/0.0
+    10.4.0.0/22 _[Direct/0] 01:25:10 > via ge-0/0/1.0
+    10.4.0.12/32 _[Local/0] 01:25:10
+    Local via ge-0/0/1.0
+    10.4.8.0/21 _[Direct/0] 01:25:11 > via ge-0/0/0.0
+    10.4.8.11/32 _[Local/0] 01:25:11
+    Local via ge-0/0/0.0
+    10.8.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    10.16.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    10.17.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    169.254.10.0/30 _[Direct/0] 01:25:10 > via st0.1
+    169.254.10.2/32 _[Local/0] 01:25:10
+    Local via st0.1
+    169.254.11.0/30 _[Direct/0] 01:25:10 > via st0.2
+    169.254.11.2/32 _[Local/0] 01:25:10
+    Local via st0.2
+
+    ```
+
+1.  Just to verify where those routes are coming from, we can take a look at the **Green Route Table**. _note: remember, it's under the **VPC** service and **Transit Gateway Route Tables** at the bottom of the left menu._ There should be **5** routes listed. Any ideas why only **4** show up on the SRX?
+
 ```
 
-1.  Just to verify where those routes are coming from, we can take a look at the **Green Route Table**. _note: remember, it's under the **VPC** service and **Transit Gateway Route Tables** at the bottom of the left menu._ There should be **5** routes listed. Any ideas why only **4** show up on the CSR?
+```

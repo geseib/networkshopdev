@@ -52,9 +52,15 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
     ![VPN tunnel Addresses](/images/vpn-tunneladdresses.png)
 
     ```
+
+    ```
+
     cd tgwwalk
-    ##./create2ndcsr.sh ip1 ip2 outputfile
-    ./create2ndcsr.sh 35.166.118.167 52.36.14.223 my2ndcsrconfig.txt
+    ##./create2ndsrx.sh ip1 ip2 outputfile
+    ./create2ndsrx.sh 35.166.118.167 52.36.14.223 my2ndsrxconfig.txt
+
+    ```
+
     ```
 
     _note: AWS generates starter templates to assist with the configuration for the on-prem router. For your real world deployments, you can get a starter template from the console for various devices (Cisco, Juniper, Palo Alto, F5, Checkpoint, etc). Word of Caution is to look closely at the routing policy in the BGP section. you may not want to send a default route out. You likely also want to consider using a route filter to prevent certain routes from being propagated to you._
@@ -64,77 +70,82 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
 1.  enter configuration mode, which will take you to a config prompt
 
     ```
-    ip-10-4-0-17#conf t
+    root% cli
+    root> configure
     Enter configuration commands, one per line.  End with CNTL/Z.
-    ip-10-4-0-17(config)#
+    (edit)
+    root#
     ```
 
 1.  Once in Configuration mode _note: you should see (config)# prompt_, paste Select all text (ctrl-v on pc/command-v on mac) in the text from the outputfile created in step 4. This will slowly paste in the configuration file.
 
-1.  if you are still at the (config)# or (config-router) prompt, type **end** and press enter.
+1.  At the root# prompt, type **commit** and press enter, type **exit** and press enter.
 
-1.  Now lets look at the new interfaces: **sh ip int br**. You should see new interfaces: Tunnel1 and Tunnel2 and they both should show up. \*note: if they do not change from down to up after a 2 minutes, likely cause is the ip addresses were flipped in the createcsr script.
+1.  Now lets look at the new interfaces: **sh int br**. You should see new interfaces: st0.3 and st0.4 and they both should show up. \*note: if they do not change from down to up after a 2 minutes, likely cause is the ip addresses were flipped in the createcsr script.
     ![ssh key and ssh to CSR](/images/csr-showtunnel.png)
 
-1.  Lets make sure we are seeing the routes on the Cisco CSR. first we can look at what BGP is seeing: **show ip bgp summary**. The most important thing to see is the State/PfxRcd (Prefixes received). If this is in Active or Idle (likely if neighbor statement is wrong: IP address, AS number) there is a configuration issue. What we want to see is a number. In fact if everything is setup correctly we should see 4 for each neighbor.
+1.  Lets make sure we are seeing the routes on the Cisco CSR. first we can look at what BGP is seeing: **show bgp summary**. The most important thing to see is the State/PfxRcd (Prefixes received). If this is in Active or Idle (likely if neighbor statement is wrong: IP address, AS number) there is a configuration issue. What we want to see is a number. In fact if everything is setup correctly we should see 4 for each neighbor.
 
     ```
-    ip-10-4-2-30#sh ip bgp summ
-    BGP router identifier 169.254.10.2, local AS number 65001
-    BGP table version is 68, main routing table version 68
-    5 network entries using 1240 bytes of memory
-    17 path entries using 2312 bytes of memory
-    4 multipath network entries and 16 multipath paths
-    2/2 BGP path/bestpath attribute entries using 560 bytes of memory
-    1 BGP AS-PATH entries using 24 bytes of memory
-    0 BGP route-map cache entries using 0 bytes of memory
-    0 BGP filter-list cache entries using 0 bytes of memory
-    BGP using 4136 total bytes of memory
-    BGP activity 14/9 prefixes, 40/23 paths, scan interval 60 secs
-
-    Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-    169.254.10.1    4        65000     368     391       68    0    0 01:00:41        4
-    169.254.11.1    4        65000     367     387       68    0    0 01:00:40        4
-    169.254.12.1    4        65000     374     394       68    0    0 01:01:44        4
-    169.254.13.1    4        65000     373     392       68    0    0 01:01:39        4
+     root> show bgp summary
+    Groups: 1 Peers: 2 Down peers: 0
+    Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
+    169.254.10.1          65000        374        415       0       0     1:01:54 Establ
+    aws.inet.0: 4/4/4/0
+    169.254.11.1          65000        373        414       0       0     1:01:51 Establ
+    aws.inet.0: 4/4/4/0
+    169.254.12.1          65000        374        415       0       0     1:01:54 Establ
+    aws.inet.0: 4/4/4/0
+    169.254.13.1          65000        373        414       0       0     1:01:51 Establ
+    aws.inet.0: 4/4/4/0
     ```
 
 1.  Lets verify Equal Cost Multipathing (ECMP). Making sure we setup ECMP, back in config mode we will add maximum-paths to 8:
-    `ip-10-4-0-17# config t router bgp 65001 address-family-ipv4 maximum-paths 8 end`
-    Now, run **sh ip ro** command . See, both the tunnels are showing up!
 
     ```
-    ...<output omitted>
-    S*    0.0.0.0/0 [1/0] via 10.4.0.1, GigabitEthernet1
-          10.0.0.0/8 is variably subnetted, 7 subnets, 3 masks
-    B        10.0.0.0/16 [20/100] via 169.254.13.1, 01:01:05
-                      [20/100] via 169.254.12.1, 01:01:05
-                      [20/100] via 169.254.11.1, 01:01:05
-                      [20/100] via 169.254.10.1, 01:01:05
-    S        10.4.0.0/16 is directly connected, GigabitEthernet1
-    C        10.4.0.0/22 is directly connected, GigabitEthernet1
-    L        10.4.2.30/32 is directly connected, GigabitEthernet1
-    B        10.8.0.0/16 [20/100] via 169.254.13.1, 01:01:05
-                      [20/100] via 169.254.12.1, 01:01:05
-                      [20/100] via 169.254.11.1, 01:01:05
-                      [20/100] via 169.254.10.1, 01:01:05
-    B        10.16.0.0/16 [20/100] via 169.254.13.1, 01:01:05
-                      [20/100] via 169.254.12.1, 01:01:05
-                      [20/100] via 169.254.11.1, 01:01:05
-                      [20/100] via 169.254.10.1, 01:01:05
-    B        10.17.0.0/16 [20/100] via 169.254.13.1, 01:01:05
-                      [20/100] via 169.254.12.1, 01:01:05
-                      [20/100] via 169.254.11.1, 01:01:05
-                      [20/100] via 169.254.10.1, 01:01:05
-          169.254.0.0/16 is variably subnetted, 8 subnets, 2 masks
-    C        169.254.10.0/30 is directly connected, Tunnel1
-    L        169.254.10.2/32 is directly connected, Tunnel1
-    C        169.254.11.0/30 is directly connected, Tunnel2
-    L        169.254.11.2/32 is directly connected, Tunnel2
-    C        169.254.12.0/30 is directly connected, Tunnel3
-    L        169.254.12.2/32 is directly connected, Tunnel3
-    C        169.254.13.0/30 is directly connected, Tunnel4
-    L        169.254.13.2/32 is directly connected, Tunnel4
+    set routing-instances aws protocols bgp group ebgp multipath
+    ```
+
+    Now, run **sh route table aws** command . See, both the tunnels are showing up!
+
+    ```
+    + = Active Route, - = Last Active, * = Both
+
+    0.0.0.0/0 _[Static/5] 01:25:10 > to 10.4.0.1 via ge-0/0/1.0
+    10.0.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    10.4.0.0/16 _[Static/5] 01:25:11 > to 10.4.8.1 via ge-0/0/0.0
+    10.4.0.0/22 _[Direct/0] 01:25:10 > via ge-0/0/1.0
+    10.4.0.12/32 _[Local/0] 01:25:10
+    Local via ge-0/0/1.0
+    10.4.8.0/21 _[Direct/0] 01:25:11 > via ge-0/0/0.0
+    10.4.8.11/32 _[Local/0] 01:25:11
+    Local via ge-0/0/0.0
+    10.8.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    10.16.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    10.17.0.0/16 _[BGP/170] 01:13:02, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.10.1 via st0.1
+    to 169.254.11.1 via st0.2
+    [BGP/170] 01:12:58, MED 100, localpref 100
+    AS path: 65000 E, validation-state: unverified > to 169.254.11.1 via st0.2
+    169.254.10.0/30 _[Direct/0] 01:25:10 > via st0.1
+    169.254.10.2/32 _[Local/0] 01:25:10
+    Local via st0.1
+    169.254.11.0/30 _[Direct/0] 01:25:10 > via st0.2
+    169.254.11.2/32 _[Local/0] 01:25:10
+    Local via st0.2
+
     ```
 
 1.  Just to verify where those routes are coming from, we can take a look at the **Green Route Table**. _note: remember, it's under the **VPC** service and **Transit Gateway Route Tables** at the bottom of the left menu._
