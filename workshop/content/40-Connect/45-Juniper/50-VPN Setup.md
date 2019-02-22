@@ -55,7 +55,7 @@ In a real production environment we would setup a second router for redundancy a
 
     ```
     cd tgwwalk
-    ##./createsrx.sh ip1 ip2 outputfile
+    ## ./createsrx.sh ip1 ip2 outputfile
     ./createsrx.sh 35.166.118.167 52.36.14.223 mysrxconfig.txt
     ```
 

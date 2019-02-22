@@ -52,15 +52,9 @@ Bandwidth scaling and High Availability are built into the Transit Gateway inher
     ![VPN tunnel Addresses](/images/vpn-tunneladdresses.png)
 
     ```
-
-    ```
-
     cd tgwwalk
     ##./create2ndsrx.sh ip1 ip2 outputfile
     ./create2ndsrx.sh 35.166.118.167 52.36.14.223 my2ndsrxconfig.txt
-
-    ```
-
     ```
 
     _note: AWS generates starter templates to assist with the configuration for the on-prem router. For your real world deployments, you can get a starter template from the console for various devices (Cisco, Juniper, Palo Alto, F5, Checkpoint, etc). Word of Caution is to look closely at the routing policy in the BGP section. you may not want to send a default route out. You likely also want to consider using a route filter to prevent certain routes from being propagated to you._
