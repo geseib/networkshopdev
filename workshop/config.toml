@@ -24,3 +24,15 @@ page = [ "HTML", "AMP"]
 [blackfriday]
 plainIDAnchors = true
 hrefTargetBlank = true
+
+[menu]
+
+[[menu.shortcuts]]
+name = "<i class='fab fa-github'></i> GitHub Project"
+url = "https://github.com/geseib/networkshopdev"
+weight = 30
+
+[[menu.shortcuts]]
+name = "<i class='fas fa-envelope'></i> Have questions?"
+url = "mailto:tgwworkshop@amazon.com"
+weight = 40
