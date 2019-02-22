@@ -11,11 +11,12 @@ pygmentsStyle = "monokai"
 [params]
 themeVariant = "mine"
 showVisitedLinks = false
-description = "AWS foo Workshop"
-disableSearch = true
+description = "AWS Networking Workshop"
+disableSearch = false
 disableAssetsBusting = true
 disableLanguageSwitchingButton = true
 disableShortcutsTitle = true
+disableInlineCopyToClipBoard = false
 
 [outputs]
 home = [ "HTML", "AMP", "RSS", "JSON"]
