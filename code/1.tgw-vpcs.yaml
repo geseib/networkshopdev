@@ -1611,7 +1611,7 @@ Outputs:
 
   ServerP1:
     Description: "P1 EC2 IP address"
-    Value: !GetAtt ServerEc2DCS1.PrivateIp
+    Value: !GetAtt ServerEc2P1.PrivateIp
     Export:
       Name: !Sub "P1-${AWS::StackName}-ServerIP"
 
@@ -1629,6 +1629,12 @@ Outputs:
         - " "
         - - "aws ssm start-session --target"
           - !Ref ServerEc2DC1
+
+  ServerDC1:
+    Description: "DC11 EC2 IP address"
+    Value: !GetAtt ServerEc2DC1.PrivateIp
+    Export:
+      Name: !Sub "DC1-${AWS::StackName}-ServerIP"
 
   PublicSubnetADC1:
     Description: "DC1 Public Subnet A"

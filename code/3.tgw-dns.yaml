@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: "Bind EC2 Instances Deployed into a VPC Created by 1.vpc-dns.yaml"
 Parameters:
-  VPCName:
+  ParentStack:
     Description: "Stack name of parent VPC stack."
     Type: String
   Zone:
@@ -74,7 +74,7 @@ Resources:
       GroupDescription: Open-up ports for bind
       GroupName: !Join ["-", [Ref: "AWS::StackName", "dns-sec-group"]]
       VpcId:
-        Fn::ImportValue: !Sub "DC1-${VPCName}-VPC"
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-VPC"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "53"
@@ -91,7 +91,7 @@ Resources:
     Type: AWS::EC2::NetworkInterface
     Properties:
       SubnetId:
-        Fn::ImportValue: !Sub "DC1-${VPCName}-PrivateSubnetA"
+        Fn::ImportValue: !Sub "DC1-${ParentStack}-PrivateSubnetA"
       Description: Interface for Bind Server
       GroupSet:
         - Ref: BindSecGroup
@@ -169,6 +169,9 @@ Resources:
               ns1          IN      A       ${thisserver}
               test        IN      A      ${thisserver}
 
+              ; other servers
+              dc1         IN      A      ${dc1server}
+
               $ORIGIN aws.${thiszone}.
               @       IN      NS      ep1.aws.${thiszone}.
 
@@ -181,6 +184,7 @@ Resources:
               systemctl start named
             - thisserver: !GetAtt BindENI.PrimaryPrivateIpAddress
               thiszone: !Ref Zone
+              dc1server: "Fn::ImportValue": !Sub "P1-${AWS::ParentStack}-ServerIP"
       Tags:
         - Key: Name
           Value:
@@ -194,7 +198,7 @@ Resources:
       GroupDescription: Open-up ports for bind
       GroupName: !Join ["-", [Ref: "AWS::StackName", "dc-dns-sec-group"]]
       VpcId:
-        "Fn::ImportValue": !Sub "DC1-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "DC1-${ParentStack}-VPC"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "53"
@@ -211,9 +215,9 @@ Resources:
       Direction: "outbound"
       IpAddresses:
         - SubnetId:
-            "Fn::ImportValue": !Sub "DC1-${VPCName}-PrivateSubnetA"
+            "Fn::ImportValue": !Sub "DC1-${ParentStack}-PrivateSubnetA"
         - SubnetId:
-            "Fn::ImportValue": !Sub "DC1-${VPCName}-PrivateSubnetB"
+            "Fn::ImportValue": !Sub "DC1-${ParentStack}-PrivateSubnetB"
       Name: !Join ["-", [Ref: "AWS::StackName", "dc1outendpoint"]]
       SecurityGroupIds:
         - !Ref DC1ResolverSecGroup
@@ -235,7 +239,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateDC1"]]
       ResolverRuleId: !GetAtt DC1DNSRule.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "DC1-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "DC1-${ParentStack}-VPC"
 
   # DCS-1 AWS Resolver setup
   ResolverSecGroup:
@@ -244,7 +248,7 @@ Resources:
       GroupDescription: Open-up ports for bind
       GroupName: !Join ["-", [Ref: "AWS::StackName", "dns-sec-group"]]
       VpcId:
-        "Fn::ImportValue": !Sub "DCS1-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "DCS1-${ParentStack}-VPC"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "53"
@@ -262,10 +266,10 @@ Resources:
       IpAddresses:
         - Ip: "10.0.8.10"
           SubnetId:
-            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetA"
+            "Fn::ImportValue": !Sub "DCS1-${ParentStack}-PrivateSubnetA"
         - Ip: "10.0.16.10"
           SubnetId:
-            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetB"
+            "Fn::ImportValue": !Sub "DCS1-${ParentStack}-PrivateSubnetB"
       Name: !Join ["-", [Ref: "AWS::StackName", "outendpoint"]]
       SecurityGroupIds:
         - !Ref ResolverSecGroup
@@ -277,10 +281,10 @@ Resources:
       IpAddresses:
         - Ip: "10.0.8.11"
           SubnetId:
-            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetA"
+            "Fn::ImportValue": !Sub "DCS1-${ParentStack}-PrivateSubnetA"
         - Ip: "10.0.16.11"
           SubnetId:
-            "Fn::ImportValue": !Sub "DCS1-${VPCName}-PrivateSubnetB"
+            "Fn::ImportValue": !Sub "DCS1-${ParentStack}-PrivateSubnetB"
       Name: !Join ["-", [Ref: "AWS::StackName", "inendpoint"]]
       SecurityGroupIds:
         - !Ref ResolverSecGroup
@@ -320,7 +324,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "wildcardAssociateNP2"]]
       ResolverRuleId: !GetAtt DNSRule1.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "NP2-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
 
   DNSRule2AssociateNP2:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
@@ -328,7 +332,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "amazonAssociateNP2"]]
       ResolverRuleId: !GetAtt DNSRule2.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "NP2-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
 
   DNSRule3AssociateNP2:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
@@ -336,7 +340,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateNP2"]]
       ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "NP2-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "NP2-${ParentStack}-VPC"
 
   DNSRule3AssociateNP1:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
@@ -344,7 +348,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateNP1"]]
       ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "NP1-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "NP1-${ParentStack}-VPC"
 
   DNSRule3AssociateDCS:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
@@ -352,7 +356,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociate"]]
       ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "DCS1-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "DCS1-${ParentStack}-VPC"
 
   DNSRule3AssociateP1:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
@@ -360,7 +364,7 @@ Resources:
       Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociate"]]
       ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
       VPCId:
-        "Fn::ImportValue": !Sub "P1-${VPCName}-VPC"
+        "Fn::ImportValue": !Sub "P1-${ParentStack}-VPC"
 
   # Create A Private Hosted Zone in Route 53
   DNSZone:
@@ -371,7 +375,7 @@ Resources:
       Name: !Join [".", ["aws", Ref: Zone]]
       VPCs:
         - VPCId:
-            Fn::ImportValue: !Sub "DCS1-${VPCName}-VPC"
+            Fn::ImportValue: !Sub "DCS1-${ParentStack}-VPC"
           VPCRegion: !Ref "AWS::Region"
 
   NP1DNSRecord:
@@ -383,7 +387,7 @@ Resources:
       Type: A
       TTL: "30"
       ResourceRecords:
-        - "Fn::ImportValue": !Sub "NP1-${VPCName}-ServerIP"
+        - "Fn::ImportValue": !Sub "NP1-${ParentStack}-ServerIP"
 
   NP2DNSRecord:
     Type: AWS::Route53::RecordSet
@@ -394,7 +398,7 @@ Resources:
       Type: A
       TTL: "30"
       ResourceRecords:
-        - "Fn::ImportValue": !Sub "NP2-${VPCName}-ServerIP"
+        - "Fn::ImportValue": !Sub "NP2-${ParentStack}-ServerIP"
 
   P1DNSRecord:
     Type: AWS::Route53::RecordSet
@@ -405,7 +409,7 @@ Resources:
       Type: A
       TTL: "30"
       ResourceRecords:
-        - "Fn::ImportValue": !Sub "P1-${VPCName}-ServerIP"
+        - "Fn::ImportValue": !Sub "P1-${ParentStack}-ServerIP"
 
 Outputs:
   BindSession:
