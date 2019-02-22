@@ -170,7 +170,7 @@ Resources:
               test        IN      A      ${thisserver}
 
               ; other servers
-              dc1         IN      A      ${dc1server}
+
 
               $ORIGIN aws.${thiszone}.
               @       IN      NS      ep1.aws.${thiszone}.
@@ -184,7 +184,7 @@ Resources:
               systemctl start named
             - thisserver: !GetAtt BindENI.PrimaryPrivateIpAddress
               thiszone: !Ref Zone
-              dc1server: "Fn::ImportValue": !Sub "P1-${AWS::ParentStack}-ServerIP"
+
       Tags:
         - Key: Name
           Value:

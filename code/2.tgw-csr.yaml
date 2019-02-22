@@ -126,7 +126,7 @@ Resources:
       TransitGatewayId: !Ref TransitGateway
 
   # Customer Gateway for TGW to DC1 Connectivity
-  CustomerGateway:
+  CiscoCustomerGateway:
     Condition: CreateCiscoCSR
     Type: AWS::EC2::CustomerGateway
     DependsOn: CSRIP
@@ -138,7 +138,7 @@ Resources:
           Value: DC1-CGW
       Type: ipsec.1
 
-  CustomerGateway:
+  JuniperCustomerGateway:
     Condition: CreateJuniperSRX
     Type: AWS::EC2::CustomerGateway
     DependsOn: vSRXEip12
