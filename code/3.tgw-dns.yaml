@@ -353,7 +353,7 @@ Resources:
   DNSRule3AssociateDCS:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
     Properties:
-      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociate"]]
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateDCS1"]]
       ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
       VPCId:
         "Fn::ImportValue": !Sub "DCS1-${ParentStack}-VPC"
@@ -361,7 +361,7 @@ Resources:
   DNSRule3AssociateP1:
     Type: "AWS::Route53Resolver::ResolverRuleAssociation"
     Properties:
-      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociate"]]
+      Name: !Join ["-", [Ref: "AWS::StackName", "corpdomainAssociateP1"]]
       ResolverRuleId: !GetAtt DNSRule3.ResolverRuleId
       VPCId:
         "Fn::ImportValue": !Sub "P1-${ParentStack}-VPC"
