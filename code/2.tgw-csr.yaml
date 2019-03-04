@@ -220,7 +220,7 @@ Resources:
         - NetworkInterfaceId: !Ref CSRENI
           DeviceIndex: 0
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", CSRAMI]
-      InstanceType: c5.large
+      InstanceType: c4.large
       KeyName: !Ref KeyPair
       IamInstanceProfile:
         Ref: InstanceProfile
