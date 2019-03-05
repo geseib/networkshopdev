@@ -1,6 +1,8 @@
-# aws-workshop-sample
+# AWS Networking Workshop
 
-This project allows you to scaffold a workshop similar to those available at [cdkworkshop.com](https://cdkworkshop.com/), [eksworkshop.com](https://eksworkshop.com/), or [ecsworkshop.com](https://ecsworkshop.com/).
+This Workshop can be viewed and run from [this website](https://networkshopdev.aws.seibtribe.com)
+
+This project allows you to scaffold a workshop like [this website](https://networkshopdev.aws.seibtribe.com). Fork it and make something new with it...
 
 ```bash
 .
