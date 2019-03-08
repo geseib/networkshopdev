@@ -12,7 +12,8 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
 
 1. In the AWS Management Console change to the region you plan to work in and change. This is in the upper right hand drop down menu.
 
-1. Lets determine the scope of the share. If you are pairing up with someone, choose **Option 1** below, we will use their Account number. If you are working in your Organziation, you can also use **Option 2** and share with all of the account in your AWS organization.
+1. Lets determine the scope of the share. If you are pairing up with someone, choose **Option 1** below, we will use their Account number. If you are working in your Organziation, you can also use **Option 2** and share with all of the accounts in your AWS organization.
+
    **OPTION 1**
 
    - Pair up with someone else completing this walkthrough and share your account number with them, and jot their account number down as well. You will use this when identifying **Principals** later.
@@ -21,6 +22,9 @@ The first scenario we want to walk through is sharing the Transit Gateway so tha
    **OPTION 2**
 
    - Just to the left of the Region Drop down, click on your login drop-down menu and select **My organization**. On **Your account belongs to the following organization:** screen, make a note of the **Organization ID** (it will start with an **o-**)
+   
+   *note: in order for organziation sharing to work, you must change your Resource Access Manger Settings from the master account. login to the master account and change this setting as shown below.
+   ![Org Sharing](../images/ram-orgSettings.png)
 
 1. In the AWS Management Console choose **Services** then select **Resource Access Manager**.
 
